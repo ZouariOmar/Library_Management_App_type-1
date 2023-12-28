@@ -12,7 +12,7 @@ int menu() {
         "[2] Display All Books.\n"
         "[3] Add A New Loan.\n"
         "[4] Return A loan.\n"
-        "[6] Return All The Returned Loan's.\n"
+        "[5] Display All The Returned Loan's.\n"
         "[0] Exit.\n...%s", cyan, def); scanf("%d", &choice);
     return choice;
 }
@@ -31,7 +31,7 @@ void inputBook(book *bk) {
     }
 }
 void fiendBook(book bks[], int lenBk, int code, int *pos) {
-    // *pos = -1;
+    *pos = -1;
     for(int i = 0; i < lenBk && *pos == -1; i++) {
         if(bks[i].code == code) *pos = i;
     }
@@ -69,15 +69,42 @@ void inputLoan(loan *ln) {
 }
 void addLoan(loan lns[], int *lenLn, book bks[], int lenBk) {
     loan ln; inputLoan(&ln); int i = 0, pos;
-    fiendLoan(ln.id, lns, lenLn, &pos);
-    while(i < lenBk) {
-        if(pos == -1) {
-            printf("%s%s%s", red, errorMsg04, def); break;
-        }
-        // rest of code...
+    fiendLoan(ln.id, lns, *lenLn, &pos);
+    if(pos != -1) {
+        printf("%s%s%s", red, errorMsg04, def);
+    } else {
+        fiendBook(bks, lenBk, ln.bkCode, &pos);
+        if(pos != -1 && bks[pos].code > 0) {
+            bks[pos].nbrCpy--; lns[(*lenLn)++] = ln;
+            printf("%s%s%s", green, successMsg01, def);
+        } else printf("%s%s%s", red, errorMsg05, def);
     }
 }
 void fiendLoan(int id, loan lns[], int lenLn, int *pos) {
-    // rest of code...
+    *pos = -1;
+    for(int i = 0; i < lenLn && *pos == -1; i++) {
+        if(lns[i].id == id) *pos = i;
+    }
 }
-// test
+void returnLoan(int id, loan lns[], int lenLn, book bks[], int lenBk) {
+    int pos; fiendLoan(id, lns, lenLn, &pos);
+    if(pos != -1 && lns[pos].state == 0) {
+        fiendBook(bks, lenBk, lns[pos].bkCode, &pos);
+        if(pos != -1) {
+            bks[pos].nbrCpy++; lns[pos].state = 1;
+        } else printf("%s%s%s", red, errorMsg05, def);
+    } else printf("%s%s%s", red, errorMsg06, def);
+    
+}
+void DisplayReturnedLoans(loan lns[], int lenLn) {
+    int i = 0;
+    while(i < lenLn) {
+        if(lns[i].state == 1) printf(
+            "%sLoan %d:\n"
+            "Number.................. %d\n"
+            "Code Of Book............ %d\n"
+            "Id Of Subscription...... %s\n.%s\n",
+            bleu, i + 1, lns[i].id, lns[i].bkCode,
+            lns[i].subId, def); i++;
+    }           // warning: add a msg if there is no loan returned !
+}
