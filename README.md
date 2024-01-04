@@ -1,4 +1,4 @@
-# Library Management App
+# Library App Management (type 1)
 
 A console-based Library Management application in C.
 
