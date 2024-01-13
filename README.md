@@ -18,4 +18,4 @@ This project is a console-based application for managing books and loans in a li
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/ZouariOmar/library-management-app.git
+   git clone https://github.com/ZouariOmar/library_App_management_type-1.git
